@@ -24,7 +24,7 @@
 </head>
 <body>
     <div id="map" class="map"></div>
-    <input type="text" value="哈哈哈" id="startLocation" class="location">
+    <input type="text" value="测试" id="startLocation" class="location">
 </body>
 <script type="text/javascript" src="../script/api.js"></script>
 <script type="text/javascript">
@@ -114,7 +114,7 @@
             filter: 1
         }, function(ret, err) {
             if (ret.status) {
-                alert('定位管理器初始化成功！');
+                ///alert('定位管理器初始化成功！');
                 aMapLBS.singleAddress({
                     timeout: 10
                 }, function(ret, err) {
