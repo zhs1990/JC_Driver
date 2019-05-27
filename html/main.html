@@ -7,49 +7,135 @@
     <title>Hello APP</title>
     <link rel="stylesheet" type="text/css" href="../css/api.css" />
   	<style>
-
+      .map{
+        width:100%;
+        height:300px;
+      }
+      .location{
+        width:90%;
+        height:35px;
+        margin:0 auto;
+        display: block;
+        border-bottom:1px solid #ccc;
+        outline: none;
+        margin-top:10px;
+      }
   	</style>
 </head>
 <body>
-
+    <div id="map" class="map"></div>
+    <input type="text" value="哈哈哈" id="startLocation" class="location">
 </body>
 <script type="text/javascript" src="../script/api.js"></script>
 <script type="text/javascript">
     apiready = function(){
+      var oStart =  $api.byId('startLocation');
       var aMap = api.require('aMap');
+      var aMapLBS = api.require('aMapLBS');
+
       aMap.show();
-      aMap.open({
-          rect: {
-              x: 0,
-              y: 0,
-              w: "100%",
-              h: "50%"
-          },
-          showUserLocation: true,
-          zoomLevel: 11,
-          center: {
-              lon: 116.4021310000,
-              lat: 39.9994480000
-          },
-          fixedOn: api.frameName,
-          fixed: true
-      }, function(ret, err) {
-          if (ret.status) {
-              alert(JSON.stringify(ret));
-          } else {
-              alert(JSON.stringify(err));
-          }
-      });
+      initMap();
       aMap.getLocation(function(ret, err) {
           if (ret.status) {
-              alert(JSON.stringify(ret));
+              aMap.open({
+                  rect: {
+                      x: 0,
+                      y: 0,
+                      w: "100%",
+                      h: "300"
+                  },
+                  showUserLocation: true,
+                  zoomLevel: 16,
+                  center: {
+                      lon: ret.lon,
+                      lat: ret.lat
+                  },
+                  fixedOn: api.frameName,
+                  fixed: true,
+                  showsAccuracyRing : false,
+              }, function(ret, err) {
+                  if (ret.status) {
+                      dragMap();
+                  } else {
+                      alert(JSON.stringify(err));
+                  }
+              });
+              aMap.addAnnotations({
+                  annotations: [{
+                      id: 1,
+                      lon: ret.lon,
+                      lat: ret.lat
+                  }],
+                  icons: ['widget://image/marker.png'],
+                  draggable: false,
+                  locked: true,
+                  lockedX: "center",
+                  lockedY: "center",
+              });
           } else {
               alert(JSON.stringify(err));
           }
       });
-      aMap.showUserLocation({
-          isShow: true
-      });
+
+      function dragMap(){
+        aMap.addEventListener({
+          name : 'viewChange'
+        }, function(ret) {
+          if (ret.status) {
+            aMap.addAnnotations({
+                annotations: [{
+                    id: 1,
+                    lon: ret.lon,
+                    lat: ret.lat
+                }],
+                icons: ['widget://image/marker.png'],
+                draggable: false,
+                locked: true,
+                lockedX: "center",
+                lockedY: "center",
+            });
+            aMap.getNameFromCoords({
+                lon: ret.lon,
+                lat: ret.lat
+            }, function(ret, err) {
+                if (ret.status) {
+                    oStart.value = ret.address.split(ret.township)[1];
+                    //alert(JSON.stringify(ret));
+                } else {
+                    alert(JSON.stringify(err));
+                }
+            });
+          }
+        });
+      }
+      function initMap(){
+        aMapLBS.configManager({
+            accuracy: 'hundredMeters',
+            filter: 1
+        }, function(ret, err) {
+            if (ret.status) {
+                alert('定位管理器初始化成功！');
+                aMapLBS.singleAddress({
+                    timeout: 10
+                }, function(ret, err) {
+                    if (ret.status) {
+                      oStart.value = ret.address.POIName;
+                    }
+                });
+            }
+        });
+      }
+
+      function getLocationMes(){
+        aMapLBS.singleAddress({
+            timeout: 10
+        }, function(ret, err) {
+            if (ret.status) {
+              oStart.value = ret.address.POIName;
+            }
+        });
+      }
+
     };
 </script>
 </html>

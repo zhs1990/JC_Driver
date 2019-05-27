@@ -20,25 +20,21 @@
                flex-flow: column;
     }
     #header{
-        text-align: center; background-color: #81a9c3; color: #fff;
+        text-align: center; background-color: #fff;
         width: 100%;
     }
     #header h1{
-        font-size: 20px; height: 44px; line-height: 44px; margin: 0em; color: #fff;
+        font-size: 16px; height: 44px; line-height: 44px; margin: 0em; color: #000000;font-weight:normal;
     }
     #main{
         -webkit-box-flex: 1;
         -webkit-flex: 1;
         flex: 1;
+        height:300px;
     }
     #footer{
-        height: 30px; line-height: 30px;
         background-color: #81a9c3;
         width: 100%;
-        text-align: center;
-    }
-    #footer h5{
-        color: white;
     }
     .con{font-size: 28px; text-align: center;}
     .flex-con{
@@ -51,20 +47,16 @@
         <div id="header">
             <h1>麒麟代驾客户端</h1>
         </div>
-        <div id="main" class="flex-con">
-
-        </div>
+        <div id="main" class="flex-con"></div>
+        <!-- <div id="footer">hahh</div> -->
     </div>
 </body>
 <script type="text/javascript" src="./script/api.js"></script>
 <script type="text/javascript">
     apiready = function(){
-		console.log("Hello APICloud");
-
         var header = $api.byId('header');
         //适配iOS 7+，Android 4.4+状态栏
         $api.fixStatusBar(header);
-
         var headerPos = $api.offset(header);
         var main = $api.byId('main');
         var mainPos = $api.offset(main);
